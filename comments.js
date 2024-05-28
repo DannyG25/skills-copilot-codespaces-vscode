@@ -1,32 +1,16 @@
-// create web server
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
+// create web server 
+// and listen on port 3000
+// create a route for /comments, set the content type to application/json, and send back a JSON object with the key comments and a value of an array of comments
+// run the server with node comments.js
+// open a browser and navigate to localhost:3000/comments to see the JSON object
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const http = require('http');
 
-app.use(express.static('public'));
-
-app.get('/comments', function(req, res) {
-  fs.readFile(path.join(__dirname, 'comments.json'), function(err, data) {
-    var comments = JSON.parse(data);
-    res.json(comments);
-  });
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({ comments: ['one', 'two', 'three'] }));
 });
 
-app.post('/comments', function(req, res) {
-  fs.readFile(path.join(__dirname, 'comments.json'), function(err, data) {
-    var comments = JSON.parse(data);
-    comments.push(req.body);
-    fs.writeFile(path.join(__dirname, 'comments.json'), JSON.stringify(comments, null, 4), function(err) {
-      res.json(comments);
-    });
-  });
-});
-
-app.listen(3000, function() {
-  console.log('Server is running on port 3000');
+server.listen(3000, () => {
+  console.log('Server listening on port 3000');
 });
